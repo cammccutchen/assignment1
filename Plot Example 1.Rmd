@@ -1,0 +1,108 @@
+---
+title: "Assignment 1_VIS 2128"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load packages, message=FALSE}
+library(sf)
+library(tidyverse)
+library(ggspatial)
+library(ggthemes)
+library(raster)
+library(tools4uplift)
+library(tools)
+```
+
+###Choose the right data 
+
+```{r read datasets}
+Zoning <- st_read("Zoning_Districts.geojson")
+Open_space <- st_read("Open_Space.geojson")
+Sea_level <- st_read("Climate_Ready_Boston_Sea_Level_Rise_Inundation.geojson")
+Hospitals <- st_read("Hospitals.geojson")
+
+```
+
+### Assignment 1 objective
+
+Our main objective for this assignment was to depict the relationship between open spaces, hospitals and sea level rise. We wanted to see the threat that sea level rise would pose to hospitals. From there we wanted to see if we could combat the risk that hospitals may endure by using near by open space as a means to absorb damage from natural occurrences spurred by sea level rise. 
+
+
+###Uploading
+
+Our first task was to upload the data and understand the nature of the files. We uploaded the files one at a time to get an understanding of the visual quality that would be displayed on R.  
+
+```{r simple plot 1}
+Open_space_plot <- ggplot(Open_space) +
+  geom_sf()
+
+Open_space_plot
+```
+### Layering
+
+After a general overview of our data, we then proceeded to properly layer data so that it would make sense to the audience / public. We found that working in grey scale forced us to prioritize shape and line thickness. 
+
+``` {r Proper Map Order}
+ ggplot(Zoning_Districts.geojson) +
+  geom_sf() +
+  geom_sf(data = Sea_level) +
+  geom_sf(data = Open_space)
+```
+###Color and Labeling
+
+After organizing our layers we then proceeded to focus on color and labeling. In the example below we started with correlating the proper color to the proper use. We attempted to add labels to the visualization, but felt that it was more captivating to leave an empty background without labels, since the color scheme is somewhat self-explanatory. 
+
+
+``` {r Add Color}
+ ggplot(zoning, color = "black", fill = "light grey", size = 1.5) +
+  geom_sf() +
+  geom_sf(data = Sea_level, color = "light blue", size = 2) +
+  geom_sf(data = Open_space, shape = 19, color = "dark green", fill = "light green" )+
+  geom_sf(data = Hospitals, shape = 3, color = "red", size = 3 )
+
+```
+
+``` {r lengend}
+ ggplot(zoning, color = "black", fill = "light grey", size = 1.5) +
+  geom_sf() +
+  geom_sf(data = Sea_level, color = "NA", alpha = .08, aes(fill = "Sea Level Rise")) +
+  geom_sf(data = Open_space, shape = "19", color = "dark green", alpha = .3, aes(fill = "Open space") )+
+  geom_sf(data = Hospitals, shape = 3, color = "red", size = 3, aes(color = "Hospitals") )
+
+```
+``` {r Proper Theme}
+ ggplot(zoning, color = "black", fill = "light grey", size = 1.5) +
+  geom_sf() +
+  geom_sf(data = Sea_level, color = "dark blue", size = .05, fill = "light blue") +
+  geom_sf(data = Open_space, shape = 19, color = "dark green", fill = "light green" )+
+  geom_sf(data = Hospitals, shape = 19, color = "red", size = 2, aes(color = "Hospitals") )+
+  theme_map()
+
+```
+###Individual Data
+
+Lastly we wanted to use open street maps to bring to life the importance of individual data sets. Both the sea level rise and hospital maps shown in succession create a attention grabbing scene for the viewer. 
+
+``` {r stamenbw}
+ ggplot(data = Hospitals, shape = "19", color = "red", size = 3, aes(color = "Hospitals") )+
+  geom_sf() +
+  annotation_map_tile(zoomin = 0, progress = "none", type = "stamenbw") +
+  geom_sf() +
+  labs(caption = "Map tiles and data by OpenStreetMap")+
+   scale_color_manual(values = c("red"), name = "") 
+
+```
+``` {r stamen watercolor}
+ ggplot(data = Sea_level, color = "dark blue", size = .05, alpha = .01, aes(fill = "Sea Level"))+
+  geom_sf() +
+  annotation_map_tile(zoomin = 0, progress = "none", type = "stamenwatercolor") +
+  geom_sf() +
+  labs(caption = "Map tiles and data by OpenStreetMap")+
+   scale_fill_manual(values = c("light blue"), name = "") 
+```

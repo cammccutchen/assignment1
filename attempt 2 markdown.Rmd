@@ -26,3 +26,33 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+```{r}
+#watershed##
+watershed_shape <- st_read("https://opendata.arcgis.com/datasets/aec9f0fc40e548f9be12e91565191a1f_0.geojson")
+
+##flood-zones##
+flood_zones <- st_read("https://opendata.arcgis.com/datasets/ef3bdd041b2e424695eb4dfe965966c4_0.geojson")
+
+##environmental permit##
+environment_permit <- st_read("https://opendata.arcgis.com/datasets/1c81f3c9fafb4a92bceb73207ec225dd_1.geojson")
+```
+ 
+```{r}
+watershed_shape <- ggplot(watershed_shape) +
+  geom_sf()
+
+watershed_shape
+  ```
+```{r simple environmental permit}
+  ggplot(environment_permit) +
+   geom_sf(shape = 17, color = "green", size = .05)
+
+  ```
+ 
+  ```{r} 
+  > ggplot(watershed_shape, color = "light blue") +
+     geom_sf(data = flood_zones) +
+     geom_sf(data = environment_permit, shape = 17, color = "green", size = .05)
+  
